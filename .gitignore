@@ -1,0 +1,59 @@
+# =========================
+# Environment & secrets
+# =========================
+.env
+.env.*
+*.env
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.env/
+venv/
+.venv/
+ENV/
+env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# =========================
+# Django
+# =========================
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# =========================
+# FastAPI / Uvicorn
+# =========================
+*.pid
+uvicorn.log
+
+# =========================
+# IDEs / Editors
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# Testing / coverage
+# =========================
+.coverage
+htmlcov/
+.pytest_cache/
