@@ -99,6 +99,10 @@ http://localhost:PORT
 * **IP dei database**: poiché PostgreSQL e MongoDB sono installati su un altro PC della rete, è necessario aggiornare **l’indirizzo IP nei file di configurazione** di ogni servizio.
 * Se il computer dove risiedono i database cambia connessione, sarà necessario modificare nuovamente l’IP.
 
+* Per avviare fastAPI : uvicorn app.main:app --reload --port 8001
+
+* Per avviare django: python manage.py runserver
+
 ---
 
 ## Struttura del Repository
