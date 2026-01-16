@@ -1,3 +1,55 @@
-from django.shortcuts import render
-
 # Create your views here.
+
+from django.shortcuts import render, redirect
+from .forms import LoginForm, RegisterForm
+from .services.auth_service import login_user, register_user
+
+def index(request):
+    context = {
+        'app_name': 'Utente',
+    }
+    return render(request, 'home.html', context)
+
+
+def login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = login_user(
+                form.cleaned_data["email"],
+                form.cleaned_data["password"]
+            )
+            if user:
+                request.session["id_user"] = user["id"]
+                return redirect("dashboard")
+            else:
+                return render(request, "login.html", {"form": form, "error": "Credenziali errate"})
+    else:
+        form = LoginForm()
+
+    return render(request, "login.html", {"form": form})
+
+def register(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            name= form.cleaned_data['nome']
+            surname= form.cleaned_data['cognome']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            try:
+                if register_user(name, surname, email, password):
+                    return redirect('login')
+                else:
+                    return render(request, "register.html", {"form": form, "error": "Errore durante la registrazione"})
+            except Exception as e:
+                print(e)
+                return render(request, "register.html", {"form": form, "error": "Errore durante la registrazione"})
+    else:
+        form = RegisterForm()
+    context = {
+        'app_name': 'Utente',
+        'form': form,
+    }
+    return render(request, 'register.html', context)
+
