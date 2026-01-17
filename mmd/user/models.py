@@ -15,3 +15,4 @@ class MyUser(models.Model):
         verbose_name = "MyUser"
         verbose_name_plural = "MyUsers"
 
+
