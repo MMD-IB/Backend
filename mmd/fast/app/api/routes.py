@@ -1,7 +1,7 @@
 # app/api/routes.py
 from fastapi import APIRouter,HTTPException
 from pydantic import BaseModel
-from Backend.mmd.user.services.user_service import get_users_psycopg
+from mmd.user.services.user_service import get_users_psycopg
 from webapp.services.auth_service import login_user, register_user
 
 router = APIRouter()

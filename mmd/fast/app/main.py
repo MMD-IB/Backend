@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from fast.app.api.routes import router
+from mmd.fast.app.api.routes import router
 import os
 
 import django

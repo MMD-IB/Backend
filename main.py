@@ -21,38 +21,38 @@
 # # #     print("Received reply %s [ %s ]" % (request, message))
 
 
-# import os
-# import psycopg2
-# from dotenv import load_dotenv
+import os
+import psycopg2
+from dotenv import load_dotenv
 # from pymongo import MongoClient
 
-# load_dotenv()
+load_dotenv()
 
 
-# conn = psycopg2.connect(
-#     dbname=os.getenv("DB_NAME"),
-#     user=os.getenv("DB_USER"),
-#     password=os.getenv("DB_PASSWORD"),
-#     host=os.getenv("DB_HOST"),   # IP PC DB
-#     port=os.getenv("DB_PORT")
-# )
+conn = psycopg2.connect(
+    dbname=os.getenv("DB_NAME"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    host=os.getenv("DB_HOST"),   # IP PC DB
+    port=os.getenv("DB_PORT")
+)
 
-# cur = conn.cursor()
+cur = conn.cursor()
 
 
 # # CREATE
 
-# query = """
-# INSERT INTO users (nome, cognome, email, password_hash)
-# VALUES (%s, %s, %s, %s)
-# """
+query = """
+INSERT INTO users (name, surname, email, password_hash)
+VALUES (%s, %s, %s, %s)
+"""
 
-# cur.execute(query, (
-#     "Giuseppe",
-#     "Verdi",
-#     "giuseppe.verdi@email.it",
-#     "password123"
-# ))
+cur.execute(query, (
+    "Giuseppe",
+    "Verdi",
+    "giuseppe.verdi@email.it",
+    "password123"
+))
 
 
 # # # READ
@@ -109,11 +109,11 @@
 # # # query = {"nome": "Giovanni"}
 # # # collection.delete_one(query)
 
-# conn.commit()
+conn.commit()
 
-# cur.close()
-# conn.close()
+cur.close()
+conn.close()
 
 # client.close()
 
-# print("Utente inserito con successo")
+print("Utente inserito con successo")
