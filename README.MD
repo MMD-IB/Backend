@@ -221,7 +221,7 @@ POST /notifications/send
 
 ### **FR2 – Gestione documenti**
 
-* FR2.1: Gli utenti possono caricare documenti testuali (.txt, .pdf, ecc.).
+* FR2.1: Gli utenti possono caricare documenti testuali (.txt).
 * FR2.2: Il sistema deve salvare i metadati in PostgreSQL (`id`, `id_user`, `title`, `status`, `created_at`).
 * FR2.3: Il contenuto completo deve essere salvato in MongoDB, collegato a `id_document` SQL.
 * FR2.4: Gli utenti possono visualizzare l’elenco dei propri documenti con status (`uploaded`, `processing`, `ready`).
