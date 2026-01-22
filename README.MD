@@ -75,7 +75,6 @@ Il progetto consiste in una **piattaforma web** per la gestione e ricerca di doc
     "tags": ["report", "finance"],
     "version": 1
   },
-  "owner_id": 5                       // opzionale, ridondante con id_user
 }
 ```
 
