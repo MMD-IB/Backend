@@ -24,7 +24,7 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
-# from pymongo import MongoClient
+from pymongo import MongoClient
 
 load_dotenv()
 
@@ -42,17 +42,17 @@ cur = conn.cursor()
 
 # # CREATE
 
-query = """
-INSERT INTO users (name, surname, email, password_hash)
-VALUES (%s, %s, %s, %s)
-"""
+# query = """
+# INSERT INTO users (name, surname, email, password_hash)
+# VALUES (%s, %s, %s, %s)
+# """
 
-cur.execute(query, (
-    "Giuseppe",
-    "Verdi",
-    "giuseppe.verdi@email.it",
-    "password123"
-))
+# cur.execute(query, (
+#     "Giuseppe",
+#     "Verdi",
+#     "giuseppe.verdi@email.it",
+#     "password123"
+# ))
 
 
 # # # READ
@@ -74,27 +74,27 @@ cur.execute(query, (
 
 # # DELETE
 
-# # query = "DELETE FROM users WHERE id_user=%s"
-# # cur.execute(query,(
-# #     7,
-# # ))
+# query = "DELETE FROM users WHERE email=%s"
+# cur.execute(query,(
+#     "giuseppe.verdi@email.it",
+# ))
 
-# # print(cur.rowcount, "record(s) deleted")
+# print(cur.rowcount, "record(s) deleted")
 
 
-# client = MongoClient(os.getenv("MONGO_URI"))
-# db = client[os.getenv("MONGO_DB")]
-# collection = db[os.getenv("MONGO_COLLECTION")]
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client[os.getenv("MONGO_DB")]
+collection = db[os.getenv("MONGO_COLLECTION")]
 
 
 
 # # CREATE
-# doc = {
-#     "nome": "Giuseppe",
-#     "cognome": "Verdi",
-#     "eta": 25
-# }
-# collection.insert_one(doc)
+doc = {
+    "nome": "Giuseppe",
+    "cognome": "Verdi",
+    "eta": 25
+}
+collection.insert_one(doc)
 
 # # # READ
 # # # for doc in collection.find():
@@ -114,6 +114,6 @@ conn.commit()
 cur.close()
 conn.close()
 
-# client.close()
+client.close()
 
 print("Utente inserito con successo")
