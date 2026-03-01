@@ -21,7 +21,7 @@
 # # # #     print("Received reply %s [ %s ]" % (request, message))
 
 
-# import os
+import os
 # import psycopg2
 # from dotenv import load_dotenv
 # from pymongo import MongoClient
@@ -125,44 +125,44 @@ from sentence_transformers import SentenceTransformer
 
 ### --------------------- DB VETTORIALE ---------------------####  
 
-DB_PATH = "qdrant_storage"
-COLLECTION = "documenti_semantici"
-VECTOR_SIZE = 384
+# DB_PATH = os.getenv("DB_PATH")
+# COLLECTION = os.getenv("COLLECTION")
+# VECTOR_SIZE = os.getenv("VECTOR_SIZE")
 
-model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
+# model = SentenceTransformer('paraphrase-multilingual-MiniLM-L12-v2')
 
-client = QdrantClient(path=DB_PATH)
+# client = QdrantClient(path=DB_PATH)
 
-# FIX 1: sostituisce recreate_collection (deprecata)
-if client.collection_exists(COLLECTION):
-    client.delete_collection(COLLECTION)
+# # FIX 1: sostituisce recreate_collection (deprecata)
+# if client.collection_exists(COLLECTION):
+#     client.delete_collection(COLLECTION)
 
-client.create_collection(
-    collection_name=COLLECTION,
-    vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE)
-)
+# client.create_collection(
+#     collection_name=COLLECTION,
+#     vectors_config=VectorParams(size=VECTOR_SIZE, distance=Distance.COSINE)
+# )
 
-point_id = 5   
-text = "la palla corre"
+# point_id = 5   
+# text = "la palla corre"
 
-vector = model.encode(text).tolist()
+# vector = model.encode(text).tolist()
 
-client.upsert(
-    collection_name=COLLECTION,
-    points=[PointStruct(id=point_id, vector=vector, payload={"content": text})]
-)
+# client.upsert(
+#     collection_name=COLLECTION,
+#     points=[PointStruct(id=point_id, vector=vector, payload={"content": text})]
+# )
 
-query_text = "il pc non funziona"
-query_vector = model.encode(query_text).tolist()
+# query_text = "il pc non funziona"
+# query_vector = model.encode(query_text).tolist()
 
-result = client.query_points(
-    collection_name=COLLECTION,
-    query=query_vector,
-    limit=10
-)
+# result = client.query_points(
+#     collection_name=COLLECTION,
+#     query=query_vector,
+#     limit=10
+# )
 
-for res in result.points:
-    print(f"Risultato: {res.payload['content']} (Score: {round(res.score, 3)})")
+# for res in result.points:
+#     print(f"Risultato: {res.payload['content']} (Score: {round(res.score, 3)})")
 
-# FIX 2: chiusura esplicita del client per evitare l'errore msvcrt
-client.close()
+# # FIX 2: chiusura esplicita del client per evitare l'errore msvcrt
+# client.close()
