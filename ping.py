@@ -9,10 +9,11 @@
 #     print("Errore di connessione:", e)
 
 import zmq
+import os
 import numpy as np
 
-SERVER_ADDRESS = "tcp://192.168.1.158:8000"
-VECTOR_SIZE = 128
+SERVER_ADDRESS = os.getenv("SERVER_ADDRESS")
+VECTOR_SIZE = os.getenv("VECTOR_SIZE")
 
 def send_request(socket, payload: dict) -> dict:
     socket.send_json(payload)
