@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     "user",
     "document",
     "webapp",
+    "group",
+    "utils",
 ]
 
 MIDDLEWARE = [

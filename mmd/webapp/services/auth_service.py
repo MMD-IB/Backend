@@ -45,8 +45,8 @@ def register_user(name, surname, email, password):
         return False
 
     cur.execute(
-        "INSERT INTO users (name, surname, email, password_hash) VALUES (%s,%s,%s,%s)",
-        (name, surname, email, make_password(password))
+        "INSERT INTO users (name, surname, email, password_hash, role) VALUES (%s,%s,%s,%s,%s)",
+        (name, surname, email, make_password(password), "user")
     )
 
     conn.commit()

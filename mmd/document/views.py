@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render, get_object_or_404
 from .services.query import (
     create_document,
@@ -29,8 +30,22 @@ def document_index(request):
             if azione == "create_document":
                 title = request.POST.get("title")
                 file = request.FILES["file_upload"]
+                
+                # Extract metadata
+                file_name = file.name
+                file_type = os.path.splitext(file_name)[1]
+                file_size = f"{file.size / 1024:.2f} KB"
+                
                 contenuto = file.read().decode("utf-8")
-                extra = create_document(title, user_id)
+                
+                extra = create_document(
+                    title=title,
+                    id_user=user_id,
+                    content=contenuto,
+                    file_name=file_name,
+                    file_type=file_type,
+                    file_size=file_size
+                )
                 context.update(extra)
 
                 if extra.get("success"):
