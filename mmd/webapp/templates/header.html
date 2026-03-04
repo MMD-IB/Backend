@@ -1,0 +1,53 @@
+{% load static %}
+<nav class="navbar bg-base-100 shadow-md px-6 py-2">
+    <!-- Left: Logo/Title -->
+    <div class="flex-1">
+        <a href="{% url 'dashboard' %}" class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+            </svg>
+            <span class="text-xl font-bold text-primary tracking-tight">DocSearch</span>
+        </a>
+    </div>
+
+    <!-- Right: Notifications + User info + Avatar -->
+    <div class="flex-none flex items-center gap-4">
+
+        <!-- Notification Bell -->
+        <button class="btn btn-ghost btn-circle" aria-label="Notifiche">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-base-content" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+        </button>
+
+        <!-- User name, surname and email -->
+        <div class="hidden sm:flex flex-col text-right leading-tight">
+            <span class="text-sm font-semibold text-base-content">
+                {{ user.name }} {{ user.surname }}
+            </span>
+            <span class="text-xs text-base-content/60">{{ user.email }}</span>
+        </div>
+
+        <!-- Avatar circle with initials -->
+        <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button"
+                class="w-10 h-10 rounded-full bg-primary text-primary-content flex items-center justify-center font-bold text-sm cursor-pointer select-none uppercase">
+                {{ user.name|slice:":1" }}{{ user.surname|slice:":1" }}
+            </div>
+            <ul tabindex="0" class="dropdown-content menu bg-base-100 rounded-box z-10 w-52 p-2 shadow mt-2">
+                <li>
+                    <form method="post" action="{% url 'dashboard' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="azione" value="logout" />
+                        <button type="submit" class="w-full text-left text-error">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</nav>

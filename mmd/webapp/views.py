@@ -33,8 +33,8 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            name= form.cleaned_data['nome']
-            surname= form.cleaned_data['cognome']
+            name = form.cleaned_data['name']
+            surname = form.cleaned_data['surname']
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             try:

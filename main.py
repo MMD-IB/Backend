@@ -21,16 +21,20 @@
 # # # #     print("Received reply %s [ %s ]" % (request, message))
 
 
+print("Script Avviato (Prima dei Moduli Pesanti)...", flush=True)
+
 import os
 # import psycopg2
-# from dotenv import load_dotenv
-# from pymongo import MongoClient
+from dotenv import load_dotenv
+from pymongo import MongoClient
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct
 from sentence_transformers import SentenceTransformer
 
-# load_dotenv()
 
+load_dotenv()
+
+print("Due", flush=True)
 
 # conn = psycopg2.connect(
 #     dbname=os.getenv("DB_NAME"),
@@ -85,27 +89,22 @@ from sentence_transformers import SentenceTransformer
 # # print(cur.rowcount, "record(s) deleted")
 
 
-# client = MongoClient(os.getenv("MONGO_URI"))
-# db = client[os.getenv("MONGO_DB")]
-# collection = db[os.getenv("MONGO_COLLECTION")]
+client = MongoClient(os.getenv("MONGO_URI"))
+db = client[os.getenv("MONGO_DB")]
+collection = db[os.getenv("MONGO_COLLECTION")]
 
 
 
-# # # CREATE
-# doc = {
-#     "nome": "Giuseppe",
-#     "cognome": "Verdi",
-#     "eta": 25
-# }
-# collection.insert_one(doc)
+# # CREATE
+doc = {
+    "nome": "Giuseppe",
+    "cognome": "Verdi",
+    "eta": 25
+}
+collection.insert_one(doc)
 
 # # # # READ
-# # # # for doc in collection.find():
-# # # #     print(doc)
 
-# # # # UPDATE
-# # # # query = {"nome": "Giovanni"}
-# # # # new_values = {"$set": {"eta": 26}}
 # # # # collection.update_one(query, new_values)
 
 # # # # DELETE
@@ -114,12 +113,17 @@ from sentence_transformers import SentenceTransformer
 
 # conn.commit()
 
-# cur.close()
+# cur.close()# # # # for doc in collection.find():
+# # # #     print(doc)
+
+# # # # UPDATE
+# # # # query = {"nome": "Giovanni"}
+# # # # new_values = {"$set": {"eta": 26}}
 # conn.close()
 
-# client.close()
+client.close()
 
-# print("Utente inserito con successo")
+print("Utente inserito con successo", flush=True)
 
 
 

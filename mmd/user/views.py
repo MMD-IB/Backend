@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from user.models import MyUser
 from document.views import document_index
 # Create your views here.
@@ -8,9 +8,10 @@ def user_index(request):
     if "id_user" not in request.session:
         return render(request, "home.html")
 
+    user_id = request.session["id_user"]
     context = {
         "appname": "User",
-        "id_user": request.session["id_user"],
+        "id_user": user_id,
         "user": get_user(request)
     }
 
@@ -18,18 +19,21 @@ def user_index(request):
         azione = request.POST.get("azione")
         if azione == "logout":
             return logout(request)
+        
         # gestione documenti via POST
         if azione in ["create_document", "update_document", "delete_document"]:
-            extra = document_index(request)
-            context.update(extra)
+            document_index(request)
+            return redirect("dashboard")
+            
         # gestione utente
         if azione == "update_user":
-            extra = update_user(request)
-            context.update(extra)
-    if "documents" not in context:
-        context.update(document_index(request))
+            update_user(request)
+            return redirect("dashboard")
 
-    return render(request, "user-index.html", context)
+    # In GET or after redirect, load documents
+    context.update(document_index(request))
+
+    return render(request, "user/homepage.html", context)
 
 
 def get_user(request):

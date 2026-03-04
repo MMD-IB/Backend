@@ -19,6 +19,7 @@ from django.urls import path, include  # <- include deve essere importato
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('webapp.urls')),  # include deve ricevere il modulo urls della app
+    path('', include('webapp.urls')),
+    path('user/', include('user.urls')),
 ]
 

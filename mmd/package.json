@@ -1,0 +1,33 @@
+{
+  "devDependencies": {
+    "daisyui": "^5.5.19"
+  },
+  "name": "project",
+  "version": "1.0.0",
+  "description": "---",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tw:dev": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
+    "dj:run": "python manage.py runserver",
+    "fast:run": "uvicorn fast.app.main:app --reload",
+    "dev": "concurrently --prefix '[{name}]' --names 'tailwind,Django,FastAPI' --prefix-colors 'blue,magenta,cyan' \"npm run tw:dev\" \"npm run dj:run\" \"npm run fast:run\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MMD-IB/Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/MMD-IB/Backend/issues"
+  },
+  "homepage": "https://github.com/MMD-IB/Backend#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.2.1"
+  }
+}

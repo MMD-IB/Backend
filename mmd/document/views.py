@@ -24,12 +24,14 @@ def document_index(request):
 
         if azione == "create_document":
             title = request.POST.get("title")
-            extra = create_document(user_id, title)
+            file = request.FILES["file_upload"]
+            contenuto = file.read().decode("utf-8")
+            extra = create_document(title, user_id)
             context.update(extra)
 
             if extra.get("success"):
                 document_id = extra.get("document_id")
-                create_document_noSQL(document_id, "")
+                create_document_noSQL(document_id, contenuto)
                 
                 context["documents"] = get_documents_by_user(user_id)
 
@@ -49,3 +51,4 @@ def document_index(request):
             context["documents"] = get_documents_by_user(user_id)
 
     return context
+
