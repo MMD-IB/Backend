@@ -12,7 +12,10 @@ def document_index(request):
     if "id_user" not in request.session or request.session["id_user"] is None:
         return {"error": "User not logged in."}
 
-    user_id = request.session["id_user"]
+
+    user_id = request.session.get("id_user")
+    if not user_id:
+        return None
 
     context = {
         "id_user": user_id,
