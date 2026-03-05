@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Upload Center - DocSearch{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-8 max-w-3xl mx-auto">
+
+    <!-- Header -->
+    <div class="text-center">
+        <h1 class="text-3xl font-black text-base-content">Carica Documenti</h1>
+        <p class="text-base-content/60 mt-1">Espandi la conoscenza dell'AI con i tuoi file.</p>
+    </div>
+
+    <!-- Upload Form Card -->
+    <div class="card bg-base-100 shadow-sm border border-base-300">
+        <div class="card-body">
+            <form method="POST" action="{% url 'upload_center' %}" enctype="multipart/form-data"
+                hx-post="{% url 'upload_center' %}" hx-target="#toast-container" hx-swap="beforeend"
+                hx-encoding="multipart/form-data" id="upload-form">
+                {% csrf_token %}
+                <input type="hidden" name="azione" value="create_document">
+
+                <!-- Drop Zone -->
+                <div id="drop-zone"
+                    class="flex flex-col items-center justify-center border-2 border-dashed border-primary/40 rounded-2xl p-12 hover:border-primary hover:bg-primary/5 transition-all cursor-pointer"
+                    onclick="document.getElementById('file-input').click()">
+
+                    <div class="bg-primary/10 p-5 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-primary" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold mb-1">Trascina qui i tuoi file</h3>
+                    <p class="text-base-content/50 text-sm mb-6">Supporta .txt e .pdf (max 10MB)</p>
+                    <input type="file" name="file_upload" id="file-input" class="hidden" required />
+                    <button type="button" class="btn btn-primary">Seleziona File</button>
+                </div>
+
+                <!-- Selected file feedback -->
+                <div id="file-name-display" class="hidden alert alert-info mt-4">
+                    <span id="file-name-text"></span>
+                </div>
+
+                <!-- Optional Fields -->
+                <div class="flex flex-col gap-4 mt-8 max-w-md mx-auto">
+                    <div class="form-control w-full">
+                        <label class="label justify-center">
+                            <span class="label-text font-bold text-base-content/70">Titolo del Documento</span>
+                        </label>
+                        <input type="text" name="title" id="id_title" placeholder="Es: Report Vendite 2024"
+                            class="input input-bordered w-full text-center focus:input-primary transition-all rounded-xl" />
+                    </div>
+                </div>
+
+                <div class="card-actions justify-center mt-10">
+                    <button type="submit"
+                        class="btn btn-primary btn-wide btn-lg shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                        Inizia Elaborazione
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Info steps -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="card bg-base-100 border border-base-300">
+            <div class="card-body flex-row items-start gap-3 p-5">
+                <div class="badge badge-primary badge-lg font-bold text-base shrink-0">1</div>
+                <div>
+                    <p class="font-bold">Analisi Testuale</p>
+                    <p class="text-sm text-base-content/60">Il file viene letto e il testo viene estratto.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-base-100 border border-base-300">
+            <div class="card-body flex-row items-start gap-3 p-5">
+                <div class="badge badge-primary badge-lg font-bold text-base shrink-0">2</div>
+                <div>
+                    <p class="font-bold">Vettorizzazione</p>
+                    <p class="text-sm text-base-content/60">L'AI trasforma il testo in vettori matematici.</p>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-base-100 border border-base-300">
+            <div class="card-body flex-row items-start gap-3 p-5">
+                <div class="badge badge-primary badge-lg font-bold text-base shrink-0">3</div>
+                <div>
+                    <p class="font-bold">Ricerca Pronta</p>
+                    <p class="text-sm text-base-content/60">In pochi secondi il file è interrogabile.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('file-input');
+    const titleInput = document.getElementById('id_title');
+    const dropZone = document.getElementById('drop-zone');
+    const display = document.getElementById('file-name-display');
+    const displayText = document.getElementById('file-name-text');
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            const name = e.target.files[0].name;
+            titleInput.value = name.split('.')[0];
+            displayText.textContent = 'File selezionato: ' + name;
+            display.classList.remove('hidden');
+        }
+    });
+
+    ['dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, e => {
+            e.preventDefault();
+            if (eventName === 'dragover') dropZone.classList.add('border-primary', 'bg-primary/10');
+            else dropZone.classList.remove('border-primary', 'bg-primary/10');
+        }, false);
+    });
+
+    dropZone.addEventListener('drop', e => {
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        if (files.length > 0) {
+            const name = files[0].name;
+            titleInput.value = name.split('.')[0];
+            displayText.textContent = 'File selezionato: ' + name;
+            display.classList.remove('hidden');
+        }
+    }, false);
+</script>
+{% endblock %}

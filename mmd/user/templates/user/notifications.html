@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Notifiche - DocSearch{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto flex flex-col gap-6">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <div>
+            <h1 class="text-3xl font-black text-base-content">Centro Notifiche</h1>
+            <p class="text-base-content/60 mt-1">Storico di tutte le operazioni sui tuoi documenti.</p>
+        </div>
+        <button class="btn btn-outline btn-sm text-error border-error hover:bg-error hover:text-white">
+            Segna tutte come lette
+        </button>
+    </div>
+
+    <!-- Notification list -->
+    <div class="card bg-base-100 shadow-sm border border-base-300">
+        <div class="divide-y divide-base-200">
+            {% for n in notifications %}
+            <div class="flex gap-4 p-5 hover:bg-base-50 transition-colors">
+                <div class="bg-primary/10 p-3 rounded-full h-fit shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between items-start gap-2">
+                        <p class="font-semibold">{{ n.message }}</p>
+                        <span class="text-xs text-base-content/40 shrink-0">{{ n.notification_date|date:"d M Y, H:i"
+                            }}</span>
+                    </div>
+                    <p class="text-sm text-base-content/60 mt-1">Operazione completata con successo.</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="p-16 text-center text-base-content/40">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-3 opacity-30" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <p>Nessuna notifica presente.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

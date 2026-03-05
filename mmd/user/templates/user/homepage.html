@@ -19,7 +19,9 @@
     <!-- Search Bar -->
     <div class="max-w-2xl mx-auto mb-16">
         <div class="join w-full shadow-lg">
-            <input class="input input-bordered join-item w-full" placeholder="Cerca tra i tuoi documenti..." />
+            <input class="input input-bordered join-item w-full" name="q" placeholder="Cerca tra i tuoi documenti..."
+                hx-get="{% url 'dashboard' %}" hx-target="#document-table-container"
+                hx-trigger="keyup changed delay:500ms" hx-swap="outerHTML" />
             <button class="btn btn-primary join-item px-8">Cerca</button>
         </div>
     </div>
@@ -29,7 +31,9 @@
         <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
                 <h2 class="card-title text-2xl font-bold mb-4">Carica Documento</h2>
-                <form method="POST" action="{% url 'dashboard' %}" enctype="multipart/form-data">
+                <form method="POST" action="{% url 'dashboard' %}" enctype="multipart/form-data"
+                    hx-post="{% url 'dashboard' %}" hx-target="#document-table-container" hx-swap="outerHTML"
+                    hx-encoding="multipart/form-data">
                     {% csrf_token %}
                     <input type="hidden" name="azione" value="create_document">
                     <input type="hidden" name="title" id="id_title_hidden" value="">
@@ -62,44 +66,9 @@
         <div class="card bg-base-100 shadow-xl">
             <div class="card-body">
                 <h2 class="card-title text-2xl font-bold mb-4">I tuoi Documenti</h2>
-                <div class="overflow-x-auto">
-                    <table class="table w-full">
-                        <thead>
-                            <tr>
-                                <th>Nome File</th>
-                                <th>Data Caricamento</th>
-                                <th>Azioni</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for doc in documents|slice:":5" %}
-                            <tr class="hover">
-                                <td class="font-medium">{{ doc.title }}</td>
-                                <td class="text-xs text-base-content/60">{{ doc.created_at|date:"d/m/Y" }}</td>
-                                <td>
-                                    <button class="btn btn-ghost btn-xs text-primary">Visualizza</button>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="3" class="text-center py-8 text-base-content/40">Nessun documento caricato
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
 
-                <!-- Pagination -->
-                <div class="flex justify-center mt-8">
-                    <div class="join">
-                        <button class="join-item btn btn-sm btn-disabled">«</button>
-                        <button class="join-item btn btn-sm btn-active">1</button>
-                        <button class="join-item btn btn-sm">2</button>
-                        <button class="join-item btn btn-sm">3</button>
-                        <button class="join-item btn btn-sm">»</button>
-                    </div>
-                </div>
+                {% include "user/fragments/document_table.html" %}
+
             </div>
         </div>
     </div>

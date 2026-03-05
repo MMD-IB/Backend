@@ -1,0 +1,121 @@
+{% load static %}
+<aside class="w-64 bg-base-100 h-screen fixed left-0 top-0 border-r border-base-300 flex flex-col z-40">
+
+    <!-- Logo -->
+    <div class="p-5 border-b border-base-300">
+        <a href="{% url 'dashboard' %}" class="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-primary" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+            </svg>
+            <span class="text-xl font-black text-primary tracking-tighter uppercase">DocSearch</span>
+        </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 p-3 flex flex-col gap-1">
+        <a href="{% url 'dashboard' %}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors
+            {% if request.resolver_match.url_name == 'dashboard' %}bg-primary text-primary-content{% else %}text-base-content hover:bg-base-200{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            Dashboard
+        </a>
+        <a href="{% url 'file_manager' %}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors
+            {% if request.resolver_match.url_name == 'file_manager' %}bg-primary text-primary-content{% else %}text-base-content hover:bg-base-200{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+            </svg>
+            File Manager
+        </a>
+        <a href="{% url 'upload_center' %}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors
+            {% if request.resolver_match.url_name == 'upload_center' %}bg-primary text-primary-content{% else %}text-base-content hover:bg-base-200{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            </svg>
+            Upload Center
+        </a>
+        <a href="{% url 'semantic_search' %}"
+            class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm transition-colors
+            {% if request.resolver_match.url_name == 'semantic_search' %}bg-primary text-primary-content{% else %}text-base-content hover:bg-base-200{% endif %}">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Ricerca Semantica
+        </a>
+
+        <!-- Divider -->
+        <div class="divider my-1"></div>
+
+        <!-- Notifications dropdown -->
+        <div class="relative">
+            <button id="notif-btn" onclick="document.getElementById('notif-panel').classList.toggle('hidden')"
+                class="flex items-center gap-3 px-3 py-2 rounded-lg font-medium text-sm text-base-content hover:bg-base-200 transition-colors w-full"
+                hx-get="{% url 'notification_dropdown' %}" hx-target="#notif-list" hx-trigger="click once">
+                <div class="indicator">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span id="notif-badge" class="indicator-item badge badge-error badge-xs"></span>
+                </div>
+                Notifiche
+            </button>
+            <!-- Notification Panel -->
+            <div id="notif-panel"
+                class="hidden absolute bottom-12 left-0 w-80 bg-base-100 border border-base-300 rounded-box shadow-xl z-50">
+                <div class="p-3 border-b border-base-300 flex items-center justify-between">
+                    <span class="font-bold text-sm">Notifiche</span>
+                    <button onclick="document.getElementById('notif-panel').classList.add('hidden')"
+                        class="btn btn-ghost btn-xs">✕</button>
+                </div>
+                <ul id="notif-list" class="divide-y divide-base-200 max-h-72 overflow-y-auto">
+                    <li class="p-4 text-center text-xs text-base-content/50">Caricamento...</li>
+                </ul>
+                <div class="p-3 border-t border-base-300">
+                    <a href="{% url 'notifications' %}" class="btn btn-ghost btn-sm btn-block text-xs">Tutte le
+                        notifiche →</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- User Section -->
+    <div class="p-4 border-t border-base-300 bg-base-100 mt-auto">
+        <div class="flex items-center gap-3">
+            <div class="avatar placeholder">
+                <div
+                    class="bg-primary text-primary-content w-10 rounded-full flex items-center justify-center shadow-md">
+                    <span id="sidebar_avatar" class="text-sm font-bold uppercase"
+                        data-name="{% if current_user %}{{ current_user.name }}{% endif %}"
+                        data-surname="{% if current_user %}{{ current_user.surname }}{% endif %}">?</span>
+                </div>
+            </div>
+            <div class="flex-1 overflow-hidden">
+                <p id="sidebar_user_name" class="text-sm font-bold truncate capitalize"></p>
+                <p id="sidebar_user_email" class="text-[10px] text-base-content/50 truncate">{{ current_user.email }}
+                </p>
+            </div>
+            <a href="{% url 'logout' %}" class="btn btn-ghost btn-xs text-error p-1" title="Esci">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</aside>

@@ -5,15 +5,14 @@ from .forms import LoginForm, RegisterForm
 from .services.auth_service import login_user, register_user
 
 def index(request):
-    context = {
-        'app_name': 'Utente',
-    }
-    if not context:
-        return None
-    return render(request, 'home.html', context)
+    if request.session.get("id_user"):
+        return redirect("dashboard")
+    return render(request, 'home.html', {'app_name': 'Utente'})
 
 
 def login(request):
+    if request.session.get("id_user"):
+        return redirect("dashboard")
     try:
         if request.method == "POST":
             form = LoginForm(request.POST)
@@ -37,6 +36,8 @@ def login(request):
 
 
 def register(request):
+    if request.session.get("id_user"):
+        return redirect("dashboard")
     try:
         if request.method == "POST":
             form = RegisterForm(request.POST)
