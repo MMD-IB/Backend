@@ -18,9 +18,10 @@ def document_index(request):
     if not user_id:
         return None
 
+    search_query = request.GET.get("q")
     context = {
         "id_user": user_id,
-        "documents": get_documents_by_user(user_id)
+        "documents": get_documents_by_user(user_id, query=search_query)
     }
 
     try:

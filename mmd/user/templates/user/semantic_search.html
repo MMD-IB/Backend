@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ricerca Semantica - DocSearch{% endblock %}
+
+{% block content %}
+<div class="flex flex-col gap-8 max-w-4xl mx-auto">
+
+    <!-- Hero Search -->
+    <div class="text-center">
+        <h1 class="text-4xl font-black text-base-content mb-2">Cosa vuoi <span class="text-primary">sapere</span>?</h1>
+        <p class="text-base-content/60">Cerca tra i tuoi documenti usando il linguaggio naturale.</p>
+    </div>
+
+    <!-- Search bar -->
+    <form method="GET" action="{% url 'semantic_search' %}" class="flex gap-2">
+        <input type="text" name="q" value="{{ query|default:'' }}"
+            placeholder="Es: Quali sono i trend di vendita del Q3?"
+            class="input input-bordered input-lg flex-1 focus:input-primary" />
+        <button type="submit" class="btn btn-primary btn-lg px-8 gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Cerca
+        </button>
+    </form>
+
+    <!-- Results -->
+    {% if results %}
+    <div class="flex items-center justify-between">
+        <p class="text-base-content/60 text-sm">{{ results|length }} risultati per "<strong>{{ query }}</strong>"</p>
+        <div class="badge badge-outline">Ordinati per rilevanza</div>
+    </div>
+
+    <div class="flex flex-col gap-4">
+        {% for item in results %}
+        <div class="card bg-base-100 shadow-sm border border-base-300 hover:border-primary transition-colors">
+            <div class="card-body">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                        <h3 class="font-bold text-lg text-primary">{{ item.doc.title }}</h3>
+                        <div class="flex items-center gap-2 mt-1 mb-3">
+                            <span class="text-xs text-base-content/50">{{ item.doc.created_at|date:"d M Y" }}</span>
+                            <span class="text-xs text-base-content/30">•</span>
+                            <span class="badge badge-ghost badge-sm">Documento</span>
+                        </div>
+                        <p class="text-base-content/80 text-sm leading-relaxed">...{{ item.snippet }}...</p>
+                    </div>
+                    <!-- Score badge -->
+                    <div class="flex flex-col items-center gap-1 shrink-0">
+                        <div class="radial-progress text-primary text-xs font-bold" role="progressbar"
+                            aria-valuenow="{{ item.score|slice:':-1'|default:'0' }}" aria-valuemin="0"
+                            aria-valuemax="100" data-score="{{ item.score|slice:':-1'|default:'0' }}">
+                            {{ item.score }}
+                        </div>
+                        <span class="text-xs text-base-content/50">match</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% elif query %}
+    <!-- No results -->
+    <div class="card bg-base-100 border border-base-300">
+        <div class="card-body items-center text-center py-16">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/20 mb-4" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="text-lg font-bold text-base-content/60">Nessun risultato trovato</h3>
+            <p class="text-base-content/40 text-sm mt-1">Prova con parole chiave diverse o carica più documenti.</p>
+            <a href="{% url 'upload_center' %}" class="btn btn-primary btn-sm mt-4">Carica Documenti</a>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty state: no query yet -->
+    <div class="card bg-base-100 border border-base-200">
+        <div class="card-body items-center text-center py-16">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-base-content/20 mb-4" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h3 class="text-lg font-bold text-base-content/40">Inizia a cercare</h3>
+            <p class="text-base-content/30 text-sm mt-1">Scrivi una domanda nella barra di ricerca qui sopra.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Set radial-progress CSS variables from data attributes
+    document.querySelectorAll('.radial-progress[data-score]').forEach(el => {
+        el.style.setProperty('--value', el.dataset.score);
+        el.style.setProperty('--size', '3.5rem');
+        el.style.setProperty('--thickness', '4px');
+    });
+</script>
+{% endblock %}

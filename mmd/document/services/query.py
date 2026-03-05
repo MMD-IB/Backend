@@ -58,9 +58,12 @@ def create_document_noSQL(document_id, context):
         print(f"Error creating NoSQL document: {e}")
         return False    
 
-def get_documents_by_user(id_user):
+def get_documents_by_user(id_user, query=None):
     # Returning only non-deleted documents
-    return Document.objects.filter(id_user_id=id_user, is_deleted=False).order_by('-created_at')
+    queryset = Document.objects.filter(id_user_id=id_user, is_deleted=False)
+    if query:
+        queryset = queryset.filter(title__icontains=query)
+    return queryset.order_by('-created_at')
 
 def get_document_by_id(document_id):
     return Document.objects.filter(id=document_id).first()

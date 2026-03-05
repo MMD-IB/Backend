@@ -1,6 +1,12 @@
 from django.urls import path
-from .views import user_index
+from . import views
 
 urlpatterns = [
-    path("dashboard/", user_index, name="dashboard"),
+    path("dashboard/", views.dashboard_view, name="dashboard"),
+    path("files/", views.file_manager_view, name="file_manager"),
+    path("upload/", views.upload_center_view, name="upload_center"),
+    path("search/", views.semantic_search_view, name="semantic_search"),
+    path("notifications/", views.notifications_view, name="notifications"),
+    path("notifications/dropdown/", views.notification_dropdown, name="notification_dropdown"),
+    path("logout/", views.logout, name="logout"),
 ]
