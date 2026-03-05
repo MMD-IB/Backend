@@ -22,7 +22,7 @@ def get_user(request):
 def dashboard_view(request):
     user = get_user(request)
     if not user:
-        return redirect("home")
+        return redirect("index")
     
     docs = get_documents_by_user(user.id)
     total_files = docs.count()
@@ -53,7 +53,7 @@ def dashboard_view(request):
 def file_manager_view(request):
     user = get_user(request)
     if not user:
-        return redirect("home")
+        return redirect("index")
     
     if request.method == "POST":
         azione = request.POST.get("azione")
@@ -79,7 +79,7 @@ def file_manager_view(request):
 def upload_center_view(request):
     user = get_user(request)
     if not user:
-        return redirect("home")
+        return redirect("index")
     
     if request.method == "POST":
         azione = request.POST.get("azione")
@@ -131,7 +131,7 @@ def upload_center_view(request):
 def semantic_search_view(request):
     user = get_user(request)
     if not user:
-        return redirect("home")
+        return redirect("index")
     
     query = request.GET.get("q", "")
     results = []
@@ -152,7 +152,7 @@ def semantic_search_view(request):
 def notifications_view(request):
     user = get_user(request)
     if not user:
-        return redirect("home")
+        return redirect("index")
     
     notifications = Notification.objects.filter(id_user=user).order_by('-notification_date')
     context = {"user": user, "notifications": notifications}
@@ -166,6 +166,31 @@ def notification_dropdown(request):
     notifications = Notification.objects.filter(id_user=user).order_by('-notification_date')[:5]
     context = {"notifications": notifications}
     return render(request, "user/fragments/notification_dropdown.html", context)
+
+def update_user(request):
+    user_id = request.session.get("id_user")
+    if not user_id:
+        return {"error": "User not logged in."}
+    
+    try:
+        user = get_object_or_404(MyUser, id=user_id)
+        name = request.POST.get("name")
+        surname = request.POST.get("surname")
+        email = request.POST.get("email")
+
+        if not any([name, surname, email]):
+             return {"error": "All fields are empty!", "user": user}
+
+        if name: user.name = name
+        if surname: user.surname = surname
+        if email: user.email = email
+        
+        user.save()
+        return {"success": "User updated correctly."}
+    except Exception as e:
+        if "Http404" in str(type(e)):
+             return {"error": f"User with id {user_id} not found."}
+        return {"error": "An unexpected error occurred."}
 
 def logout(request):
     request.session.flush()
