@@ -1,0 +1,33 @@
+# ── Ambienti virtuali ─────────────────────────────────────────────
+myenv/
+venv/
+.venv/
+env/
+
+# ── Cache Python ──────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ── Cache pytest ──────────────────────────────────────────────────
+.pytest_cache/
+*.pytest_cache
+
+# ── Database locale (non va nel container) ────────────────────────
+*.sqlite3
+
+# ── File di ambiente (le secrets non vanno nell'immagine!) ────────
+.env
+*.env
+
+# ── Git ───────────────────────────────────────────────────────────
+.git/
+.gitignore
+
+# ── File di sistema ───────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Node (se usi Tailwind in locale) ─────────────────────────────
+node_modules/
