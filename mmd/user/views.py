@@ -8,8 +8,7 @@ from document.views import document_index
 def user_index(request):
     user_id = request.session.get("id_user")
     if not user_id:
-        return redirect("home")
-
+        return redirect("index")
     context = {
         "appname": "User",
         "id_user": user_id,
@@ -60,7 +59,7 @@ def get_user(request):
 
 def logout(request):
     request.session.flush()
-    return redirect("home")
+    return redirect("index")
 
 
 def update_user(request):

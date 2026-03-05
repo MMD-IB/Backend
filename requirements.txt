@@ -12,6 +12,7 @@ h11==0.16.0
 httptools==0.7.1
 idna==3.11
 pydantic==2.12.5
+pytest
 pydantic_core==2.41.5
 pymongo==4.7.1
 python-dotenv==1.2.1
