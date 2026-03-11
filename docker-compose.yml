@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  # ── Database PostgreSQL ─────────────────────────────────────────
+  db:
+    image: postgres:16          # immagine ufficiale, non serve Dockerfile
+    environment:
+      POSTGRES_DB: mmd_db       # nome del DB (deve coincidere col .env)
+      POSTGRES_USER: mmd_user
+      POSTGRES_PASSWORD: mmd_password
+    ports:
+      - "5432:5432"             # porta locale:porta container
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # i dati persistono tra riavvii
+
+  # ── Applicazione Django ─────────────────────────────────────────
+  web:
+    build: .                    # usa il Dockerfile nella stessa cartella
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app                  # sincronizza il codice locale col container
+                                # le modifiche al codice si riflettono subito
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env                    # carica le variabili d'ambiente dal tuo .env
+    depends_on:
+      - db                      # aspetta che il DB sia pronto prima di partire
+
+volumes:
+  postgres_data:                # volume named: i dati PostgreSQL sopravvivono
