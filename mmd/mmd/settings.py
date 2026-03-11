@@ -131,3 +131,15 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
+
+# RabbitMQ Configuration (Default 5672)
+RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
+RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', 5672))
+RABBITMQ_USER = os.getenv('RABBITMQ_USER', 'guest')
+RABBITMQ_PASSWORD = os.getenv('RABBITMQ_PASSWORD', 'guest')
+RABBITMQ_EXCHANGE = os.getenv('RABBITMQ_EXCHANGE', 'mmd_exchange')
+
+# ZMQ Semantic Search Server (PC2)
+ZMQ_SERVER_HOST = os.getenv('ZMQ_SERVER_HOST', '192.168.0.49')
+ZMQ_SERVER_PORT = int(os.getenv('ZMQ_SERVER_PORT', 8000))
+ZMQ_SERVER_URL = f"tcp://{ZMQ_SERVER_HOST}:{ZMQ_SERVER_PORT}"

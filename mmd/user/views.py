@@ -1,13 +1,20 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseForbidden
 from django.utils import timezone
 from .models import MyUser
+from document.models import Document
 from document.services.query import (
     get_documents_by_user,
     delete_document,
-    update_document_status
+    update_document_status,
+    create_document,
+    create_document_noSQL,
+    get_document_content
 )
 from utils.models import Notification
+from utils.rabbit_service import RabbitProducer
+from utils.zmq_service import ZMQClient
 
 def get_user(request):
     user_id = request.session.get("id_user")
@@ -86,6 +93,14 @@ def upload_center_view(request):
         if azione == "create_document":
             title = request.POST.get("title")
             file = request.FILES.get("file_upload")
+
+            # Initialize RabbitProducer
+            producer = RabbitProducer()
+            producer.send_message("notifications.info", {
+                "status": "processing_started",
+                "user_id": user.id,
+                "file_name": file.name if file else "Unknown"
+            })
             
             if not file:
                 return HttpResponse("File missing", status=400)
@@ -101,7 +116,6 @@ def upload_center_view(request):
                 extra = create_document(
                     title=title,
                     id_user=user.id,
-                    content=contenuto,
                     file_name=file_name,
                     file_type=file_type,
                     file_size=file_size
@@ -109,6 +123,16 @@ def upload_center_view(request):
 
                 if extra.get("success"):
                     document_id = extra.get("document_id")
+                    
+                    # Notify PC2 via ZMQ to index the new document
+                    zmq_client = ZMQClient()
+                    zmq_client.send_request("upsert", 
+                        id=document_id, 
+                        content=contenuto, 
+                        user_id=user.id,
+                        file_name=file_name
+                    )
+
                     create_document_noSQL(document_id, contenuto)
                     
                     # Create Notification
@@ -116,6 +140,14 @@ def upload_center_view(request):
                         id_user=user,
                         message=f"File '{file_name}' caricato e indicizzato con successo."
                     )
+                    
+                    # Notify success via RabbitMQ
+                    producer.send_message("notifications.info", {
+                        "status": "success",
+                        "user_id": user.id,
+                        "file_name": file_name,
+                        "document_id": document_id
+                    })
                     
                     response = HttpResponse('<div class="alert alert-success mt-4">Caricamento completato!</div>')
                     response['HX-Toast'] = "Documento caricato con successo!"
@@ -136,15 +168,34 @@ def semantic_search_view(request):
     query = request.GET.get("q", "")
     results = []
     if query:
-        # Here we would call the semantic search service
-        # Mocking values for now as per instructions to show "Similarity Score" and snippets
-        docs = get_documents_by_user(user.id, query=query)
-        for doc in docs:
-            results.append({
-                "doc": doc,
-                "snippet": doc.content[:200] + "...",
-                "score": "85%" # Mock score
-            })
+        # Notify search activity via RabbitMQ
+        producer = RabbitProducer()
+        producer.send_message("search.activity", {
+            "user_id": user.id,
+            "query": query,
+            "timestamp": str(timezone.now())
+        })
+
+        # Call the semantic search service on PC2 via ZMQ
+        zmq_client = ZMQClient()
+        response = zmq_client.send_request("search", query=query, user_id=user.id, limit=5)
+        
+        if response.get("status") == "ok":
+            for r in response.get("results", []):
+                results.append({
+                    "doc": {"title": r["payload"].get("file_name", "Documento"), "created_at": None},
+                    "snippet": r["payload"].get("content", "")[:200] + "...",
+                    "score": f"{int(r['score'] * 100)}%"
+                })
+        else:
+            # Fallback to local search if ZMQ fails or returns error
+            docs = get_documents_by_user(user.id, query=query)
+            for doc in docs:
+                results.append({
+                    "doc": doc,
+                    "snippet": doc.content[:200] + "...",
+                    "score": "N/A"
+                })
 
     context = {"user": user, "query": query, "results": results}
     return render(request, "user/semantic_search.html", context)
@@ -166,6 +217,20 @@ def notification_dropdown(request):
     notifications = Notification.objects.filter(id_user=user).order_by('-notification_date')[:5]
     context = {"notifications": notifications}
     return render(request, "user/fragments/notification_dropdown.html", context)
+
+def document_preview(request, document_id):
+    user = get_user(request)
+    if not user:
+        return HttpResponseForbidden()
+    
+    doc = get_object_or_404(Document, id=document_id, id_user=user)
+    content = get_document_content(document_id)
+    
+    context = {
+        "document": doc,
+        "content": content
+    }
+    return render(request, "user/fragments/document_preview.html", context)
 
 def update_user(request):
     user_id = request.session.get("id_user")

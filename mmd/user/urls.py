@@ -8,5 +8,6 @@ urlpatterns = [
     path("search/", views.semantic_search_view, name="semantic_search"),
     path("notifications/", views.notifications_view, name="notifications"),
     path("notifications/dropdown/", views.notification_dropdown, name="notification_dropdown"),
+    path("document/<int:document_id>/preview/", views.document_preview, name="document_preview"),
     path("logout/", views.logout, name="logout"),
 ]

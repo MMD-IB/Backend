@@ -42,7 +42,6 @@ def document_index(request):
                 extra = create_document(
                     title=title,
                     id_user=user_id,
-                    content=contenuto,
                     file_name=file_name,
                     file_type=file_type,
                     file_size=file_size

@@ -8,8 +8,7 @@
 
     <!-- Header -->
     <div>
-        <h1 class="text-3xl font-black text-base-content">Bentornato, <span class="text-primary">{{ current_user.name
-                }}</span>!
+        <h1 class="text-3xl font-black text-base-content">Bentornato, <span class="text-primary">{{ current_user.name }}</span>!
         </h1>
         <p class="text-base-content/60 mt-1">Ecco cosa sta succedendo ai tuoi documenti oggi.</p>
     </div>
@@ -69,11 +68,12 @@
                                 <th>File</th>
                                 <th>Stato</th>
                                 <th>Data</th>
+                                <th class="text-right">Azioni</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for doc in recent_documents %}
-                            <tr>
+                            <tr id="doc-row-{{ doc.id }}" class="hover">
                                 <td class="font-medium">{{ doc.title }}</td>
                                 <td>
                                     {% if doc.status == 'ready' or doc.status == 'uploaded' %}
@@ -84,11 +84,29 @@
                                     <span class="badge badge-error badge-sm">{{ doc.status }}</span>
                                     {% endif %}
                                 </td>
-                                <td class="text-xs text-base-content/60">{{ doc.created_at|date:"d/m H:i" }}</td>
+                                <td class="text-xs text-base-content/60">{{ doc.created_at|date:"d/m/Y" }}</td>
+                                <td class="text-right">
+                                    <div class="flex items-center justify-end gap-1">
+                                        <button class="btn btn-ghost btn-xs text-primary"
+                                            hx-get="{% url 'document_preview' doc.id %}"
+                                            hx-target="#preview-modal"
+                                            onclick="document.getElementById('preview-modal').showModal()">
+                                            Anteprima
+                                        </button>
+                                        <button class="btn btn-ghost btn-xs text-error"
+                                            hx-post="{% url 'file_manager' %}"
+                                            hx-vals='{"azione": "delete", "document_id": "{{ doc.id }}"}'
+                                            hx-target="#doc-row-{{ doc.id }}"
+                                            hx-swap="outerHTML"
+                                            hx-confirm="Eliminare questo documento?">
+                                            Elimina
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="3" class="text-center py-8 text-base-content/40">Nessun file recente</td>
+                                <td colspan="4" class="text-center py-8 text-base-content/40">Nessun file recente</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -123,4 +141,15 @@
         </div>
     </div>
 </div>
-{% endblock %}
+
+<!-- Modal for Preview -->
+<dialog id="preview-modal" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <div class="flex flex-col gap-4">
+            <div class="h-32 w-full bg-base-300 animate-pulse rounded-lg"></div>
+            <div class="h-4 w-3/4 bg-base-300 animate-pulse rounded"></div>
+            <div class="h-4 w-1/2 bg-base-300 animate-pulse rounded"></div>
+        </div>
+    </div>
+</dialog>
+{% endblock %}

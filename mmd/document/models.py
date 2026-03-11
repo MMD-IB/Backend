@@ -9,7 +9,6 @@ class Document(models.Model):
     id_user = models.ForeignKey(MyUser, on_delete=models.CASCADE, db_column='id_user', related_name='documents')
     title = models.CharField(max_length=30)
     content = models.TextField(default="")
-    file = models.FileField(upload_to='documents/', null=True, blank=True)
     file_name = models.CharField(max_length=30, default="")
     file_type = models.CharField(max_length=10, default="")
     file_size = models.CharField(max_length=10, default="")

@@ -8,12 +8,10 @@
     <title>{% block title %}DocSearch{% endblock %}</title>
     <link href="{% static 'css/output.css' %}" rel="stylesheet" type="text/css" />
     <script src="{% static 'js/main.js' %}" defer></script>
-    <script src="https://unpkg.com/htmx.org@2.0.0"
-        integrity="sha384-wS5l5IKJBvK6sPTKa2WZ1js3d947pvWXbPJ1OmWfEuxLgeHc6qp6u7v8976yHYnU"
-        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
 </head>
 
-<body class="min-h-screen bg-base-200 text-base-content">
+<body class="min-h-screen bg-base-200 text-base-content" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
 
     {% if user.is_authenticated or id_user %}
     {% include "sidebar.html" %}
@@ -28,6 +26,10 @@
     <div id="toast-container" class="toast toast-end toast-bottom z-50"></div>
 
     <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        });
+
         document.body.addEventListener('htmx:afterOnLoad', function (evt) {
             const toastMessage = evt.detail.xhr.getResponseHeader('HX-Toast');
             if (toastMessage) {

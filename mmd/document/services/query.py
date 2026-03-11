@@ -16,13 +16,13 @@ def close_connection_noSQL(client_obj):
     # client.close() is usually managed globally or should be handled carefully
     pass
 
-def create_document(title, id_user, content="", file_name="", file_type="", file_size="", version="1.0"):
+def create_document(title, id_user, file_name="", file_type="", file_size="", version="1.0"):
     try:
         user = MyUser.objects.get(id=id_user)
         doc = Document.objects.create(
             title=title,
             id_user=user,
-            content=content,
+            content="",
             file_name=file_name,
             file_type=file_type,
             file_size=file_size,
