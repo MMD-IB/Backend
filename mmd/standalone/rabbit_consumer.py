@@ -7,6 +7,15 @@ from dotenv import load_dotenv
 # Load config from .env if available
 load_dotenv()
 
+# Setup Django Environment
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mmd.settings')
+import django
+django.setup()
+
+from utils.models import Notification
+from user.models import MyUser
+
 RABBITMQ_HOST = os.getenv('RABBITMQ_HOST', 'localhost')
 RABBITMQ_PORT = int(os.getenv('RABBITMQ_PORT', 5672))
 RABBITMQ_USER = os.getenv('RABBITMQ_USER', 'guest')
@@ -18,6 +27,31 @@ def callback(ch, method, properties, body):
     try:
         data = json.loads(body)
         print(f"\n[RECEIVED] Topic: {routing_key}")
+        print(f" [DEBUG] Message body: {body.decode()}")
+        
+        # Handle notifications
+        if routing_key.startswith("notifications."):
+            status = data.get("status")
+            user_id = data.get("user_id")
+            file_name = data.get("file_name", "Unknown")
+            
+            try:
+                user = MyUser.objects.get(id=user_id)
+                message = ""
+                
+                if status == "processing_started":
+                    message = f"Documento '{file_name}' in fase di caricamento"
+                elif status == "success":
+                    message = f"File '{file_name}' caricato e indicizzato con successo."
+                
+                if message:
+                    Notification.objects.create(id_user=user, message=message)
+                    print(f" [DB] Created notification for user {user_id}: {message}")
+            except MyUser.DoesNotExist:
+                print(f" [ERR] User {user_id} not found")
+            except Exception as e:
+                print(f" [ERR] Failed to create notification: {e}")
+
         print(json.dumps(data, indent=2))
         print("-" * 30)
     except Exception as e:
@@ -25,7 +59,7 @@ def callback(ch, method, properties, body):
 
 def main():
     print("=" * 50)
-    print("  🐰 RabbitMQ Notification Consumer (PC2 Simulator)")
+    print("  RabbitMQ Notification Consumer (PC2 Simulator)")
     print("=" * 50)
     
     try:
@@ -70,10 +104,10 @@ def main():
         channel.start_consuming()
 
     except KeyboardInterrupt:
-        print("\n  👋 Exiting...")
+        print("\n  Exiting...")
         sys.exit(0)
     except Exception as e:
-        print(f"\n  ❌ Error: {e}")
+        print(f"\n  Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

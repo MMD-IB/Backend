@@ -24,7 +24,7 @@ class Notification(models.Model):
     id = models.AutoField(primary_key=True, db_column='id_notification')
     id_user = models.ForeignKey('user.MyUser', on_delete=models.CASCADE, db_column='id_user')
     message = models.TextField()
-    notification_date = models.DateField(auto_now_add=True, null=True, blank=True)
+    notification_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateField(null=True, blank=True)
 

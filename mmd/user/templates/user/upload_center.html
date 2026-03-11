@@ -16,7 +16,7 @@
     <div class="card bg-base-100 shadow-sm border border-base-300">
         <div class="card-body">
             <form method="POST" action="{% url 'upload_center' %}" enctype="multipart/form-data"
-                hx-post="{% url 'upload_center' %}" hx-target="#toast-container" hx-swap="beforeend"
+                hx-post="{% url 'upload_center' %}" hx-target="#upload-status" hx-swap="innerHTML"
                 hx-encoding="multipart/form-data" id="upload-form">
                 {% csrf_token %}
                 <input type="hidden" name="azione" value="create_document">
@@ -57,10 +57,12 @@
 
                 <div class="card-actions justify-center mt-10">
                     <button type="submit"
-                        class="btn btn-primary btn-wide btn-lg shadow-lg shadow-primary/20 hover:scale-105 transition-all">
+                        class="btn btn-primary btn-wide btn-lg shadow-lg shadow-primary/20 hover:scale-105 transition-all"
+                        hx-on:click="setTimeout(() => htmx.trigger('body', 'refreshNotifications'), 500)">
                         Inizia Elaborazione
                     </button>
                 </div>
+                <div id="upload-status" class="mt-4"></div>
             </form>
         </div>
     </div>

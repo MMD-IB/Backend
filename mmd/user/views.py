@@ -71,6 +71,7 @@ def file_manager_view(request):
             if request.headers.get('HX-Request'):
                 response = HttpResponse("") 
                 response['HX-Toast'] = "Documento eliminato correttamente."
+                response['HX-Refresh'] = "true"
                 return response
         
         elif azione == "toggle_search":
@@ -135,13 +136,7 @@ def upload_center_view(request):
 
                     create_document_noSQL(document_id, contenuto)
                     
-                    # Create Notification
-                    Notification.objects.create(
-                        id_user=user,
-                        message=f"File '{file_name}' caricato e indicizzato con successo."
-                    )
-                    
-                    # Notify success via RabbitMQ
+                    # Notify success via RabbitMQ (Consumer will create Notification)
                     producer.send_message("notifications.info", {
                         "status": "success",
                         "user_id": user.id,
@@ -150,7 +145,7 @@ def upload_center_view(request):
                     })
                     
                     response = HttpResponse('<div class="alert alert-success mt-4">Caricamento completato!</div>')
-                    response['HX-Toast'] = "Documento caricato con successo!"
+                    response['HX-Trigger'] = 'refreshNotifications'
                     return response
                 else:
                     return HttpResponse(f"Errore: {extra.get('error')}", status=500)
@@ -214,7 +209,7 @@ def notification_dropdown(request):
     if not user:
         return HttpResponseForbidden()
     
-    notifications = Notification.objects.filter(id_user=user).order_by('-notification_date')[:5]
+    notifications = Notification.objects.filter(id_user=user).order_by('-notification_date', '-id')[:5]
     context = {"notifications": notifications}
     return render(request, "user/fragments/notification_dropdown.html", context)
 

@@ -11,7 +11,8 @@
     "tw:dev": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch",
     "dj:run": "python manage.py runserver",
     "fast:run": "uvicorn fast.app.main:app --port 8001 --reload",
-    "dev": "concurrently --prefix '[{name}]' --names 'tailwind,Django,FastAPI' --prefix-colors 'blue,magenta,cyan' \"npm run tw:dev\" \"npm run dj:run\" \"npm run fast:run\""
+    "rb:run": "python standalone/rabbit_consumer.py",
+    "dev": "concurrently --prefix '[{name}]' --names 'tailwind,Django,FastAPI,RabbitMQ' --prefix-colors 'blue,magenta,cyan,yellow' \"npm run tw:dev\" \"npm run dj:run\" \"npm run fast:run\" \"npm run rb:run\""
   },
   "repository": {
     "type": "git",

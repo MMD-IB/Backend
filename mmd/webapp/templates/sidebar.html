@@ -70,13 +70,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
-                    <span id="notif-badge" class="indicator-item badge badge-error badge-xs"></span>
+                    <span id="notif-badge" class="indicator-item badge badge-error badge-xs"
+                        hx-get="{% url 'notification_dropdown' %}" 
+                        hx-trigger="every 10s, refreshNotifications from:body"
+                        hx-target="#notif-list"></span>
                 </div>
                 Notifiche
             </button>
             <!-- Notification Panel -->
             <div id="notif-panel"
-                class="hidden absolute bottom-12 left-0 w-80 bg-base-100 border border-base-300 rounded-box shadow-xl z-50">
+                class="hidden absolute left-full ml-2 bottom-0 w-80 bg-base-100 border border-base-300 rounded-box shadow-xl z-50">
                 <div class="p-3 border-b border-base-300 flex items-center justify-between">
                     <span class="font-bold text-sm">Notifiche</span>
                     <button onclick="document.getElementById('notif-panel').classList.add('hidden')"
