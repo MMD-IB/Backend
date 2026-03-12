@@ -1495,11 +1495,14 @@
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
-  .bottom-12 {
-    bottom: calc(var(--spacing) * 12);
+  .bottom-0 {
+    bottom: calc(var(--spacing) * 0);
   }
   .left-0 {
     left: calc(var(--spacing) * 0);
+  }
+  .left-full {
+    left: 100%;
   }
   .join {
     display: inline-flex;
@@ -1943,6 +1946,9 @@
   }
   .mb-16 {
     margin-bottom: calc(var(--spacing) * 16);
+  }
+  .ml-2 {
+    margin-left: calc(var(--spacing) * 2);
   }
   .ml-64 {
     margin-left: calc(var(--spacing) * 64);
