@@ -3,6 +3,7 @@ import json
 import sys
 import os
 from dotenv import load_dotenv
+import traceback
 
 # Load config from .env if available
 load_dotenv()
@@ -107,7 +108,10 @@ def main():
         print("\n  Exiting...")
         sys.exit(0)
     except Exception as e:
+        print(f"\n  Error type: {type(e).__name__}")
         print(f"\n  Error: {e}")
+        print(f"\n  Traceback:")
+        traceback.print_exc()
         sys.exit(1)
 
 if __name__ == "__main__":
