@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED=1
 
 # ── STEP 3: cartella di lavoro ────────────────────────────────────
 # Tutto il codice del container vivrà in /app
-WORKDIR /app
+WORKDIR /mmd
 
 # ── STEP 4: dipendenze di sistema ─────────────────────────────────
 # Servono per compilare psycopg2 (driver PostgreSQL)

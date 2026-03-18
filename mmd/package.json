@@ -29,6 +29,7 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.2.1",
     "concurrently": "^9.2.1",
+    "pika": "^0.0.1-security",
     "tailwindcss": "^4.2.1"
   }
 }

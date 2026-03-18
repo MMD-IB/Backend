@@ -1492,14 +1492,24 @@
   .top-0 {
     top: calc(var(--spacing) * 0);
   }
+<<<<<<< HEAD
   .bottom-4 {
     bottom: calc(var(--spacing) * 4);
+=======
+  .bottom-0 {
+    bottom: calc(var(--spacing) * 0);
+>>>>>>> b6a4d8a4e959674ccfc1c6db18cbd55409099160
   }
   .left-0 {
     left: calc(var(--spacing) * 0);
   }
+<<<<<<< HEAD
   .left-64 {
     left: calc(var(--spacing) * 64);
+=======
+  .left-full {
+    left: 100%;
+>>>>>>> b6a4d8a4e959674ccfc1c6db18cbd55409099160
   }
   .join {
     display: inline-flex;
@@ -1944,8 +1954,13 @@
   .mb-16 {
     margin-bottom: calc(var(--spacing) * 16);
   }
+<<<<<<< HEAD
   .ml-4 {
     margin-left: calc(var(--spacing) * 4);
+=======
+  .ml-2 {
+    margin-left: calc(var(--spacing) * 2);
+>>>>>>> b6a4d8a4e959674ccfc1c6db18cbd55409099160
   }
   .ml-64 {
     margin-left: calc(var(--spacing) * 64);
