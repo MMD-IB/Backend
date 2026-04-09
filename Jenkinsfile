@@ -138,7 +138,7 @@ pipeline {
             post {
                 always {
                     // Pubblica i risultati dei test
-                    junit 'mmd/test-results.xml' || true
+                    junit 'mmd/test-results.xml'
                     
                     // Pubblica il coverage report
                     publishHTML([
@@ -146,7 +146,7 @@ pipeline {
                         reportFiles: 'index.html',
                         reportName: 'Code Coverage Report',
                         keepAll: true
-                    ]) || true
+                    ])
                 }
             }
         }
